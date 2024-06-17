@@ -1,0 +1,13 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Nita.ToolKit.EmojiUI">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Themes/Generic.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.EmojiUI;component/Controls/EmojiPicker/EmojiPickerToolBar.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.EmojiUI;component/Controls/EmojiPicker/EmojiPopup.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.EmojiUI;component/Controls/EmojiPicker/EmojiPicker.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.EmojiUI;component/Controls/EmojiPicker/EmojiVariation.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.EmojiUI;component/Controls/EmojiPicker/EmojiList.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

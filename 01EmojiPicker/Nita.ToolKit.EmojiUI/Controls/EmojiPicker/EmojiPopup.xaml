@@ -1,0 +1,275 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:Nita.ToolKit.EmojiUI.Controls"
+    xmlns:n="http://Nita.ToolKit.BaseUI.io/v1.0"
+    xmlns:nita="clr-namespace:Nita.ToolKit.EmojiUI.Controls.EmojiPicker">
+
+    <!--#region MergedDictionaries-->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.EmojiUI;component/Controls/EmojiPicker/ToggleButton.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.EmojiUI;component/Controls/EmojiPicker/EmojiList.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    <!--#endregion-->
+
+    <!--#region  Converter-->
+    <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    <n:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    <n:BoolInverter x:Key="BoolInverter" />
+    <n:CountToVisibilityConverter x:Key="CountToVisibilityConverter" />
+    <!--#endregion-->
+
+    <!--#region NitaEmojiPopupListView-->
+    <ControlTemplate
+        x:Key="PART_EmojiListViewTemplate"
+        TargetType="ContentControl">
+        <nita:EmojiList
+            x:Name="PART_EmojiList"
+            EmojiChunkList="{Binding EmojiChunkList}"
+            IsOpen="{Binding IsOpen,
+                             Mode=TwoWay,
+                             RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}"
+            Selection="{Binding Selection,
+                                Mode=TwoWay,
+                                RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}" />
+    </ControlTemplate>
+    <!--#endregion-->
+
+    <!--#region NitaEmojiPopup  TabItemStyle-->
+    <Style
+        x:Key="NitaEmojiPopupTabItemStyle"
+        TargetType="{x:Type TabItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <n:Border
+                        x:Name="Border"
+                        Margin="3,3,0,0"
+                        Padding="3"
+                        n:BackgroundAttachP.ExtBrush="{DynamicResource DefaultHoverBackgroundColor}"
+                        n:BackgroundAttachP.ExtOpacity="0.2"
+                        Background="{DynamicResource DefaultHoverBackgroundColor}"
+                        BorderThickness="0"
+                        CornerRadius="{DynamicResource HeaderCornerRadius}">
+                        <ContentPresenter
+                            x:Name="ContentSite"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            ContentSource="Header"
+                            RecognizesAccessKey="True" />
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="SelectionStates">
+                                <VisualState x:Name="Unselected" />
+                                <VisualState x:Name="Selected">
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames
+                                            Storyboard.TargetName="Border"
+                                            Storyboard.TargetProperty="(n:Border.Background).(SolidColorBrush.Color)">
+                                            <EasingColorKeyFrame
+                                                KeyTime="0"
+                                                Value="#adadad" />
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </n:Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Panel.ZIndex" Value="100" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--#endregion-->
+
+    <!--#region NitaEmojiPopupTabControlStyle TabControlStyle-->
+    <Style
+        x:Key="NitaEmojiPopupTabControlStyle"
+        TargetType="{x:Type TabControl}">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource NitaEmojiPopupTabItemStyle}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabControl}">
+                    <Grid
+                        n:BackgroundAttachP.ExtBrush="{DynamicResource DefaultBackgroundColor}"
+                        n:BackgroundAttachP.ExtOpacity="0.2"
+                        Background="{DynamicResource DefaultBackgroundColor}"
+                        KeyboardNavigation.TabNavigation="Local">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border
+                            Margin="0,0,0,5"
+                            CornerRadius="{DynamicResource DefaultMinCornerRadius}">
+                            <TabPanel
+                                x:Name="HeaderPanel"
+                                Grid.Row="0"
+                                Margin="0,0,4,-1"
+                                Panel.ZIndex="1"
+                                n:BackgroundAttachP.ExtBrush="{DynamicResource DefaultBackgroundColor}"
+                                n:BackgroundAttachP.ExtOpacity="0.2"
+                                Background="{DynamicResource DefaultBackgroundColor}"
+                                IsItemsHost="True"
+                                KeyboardNavigation.TabIndex="1" />
+                        </Border>
+                        <Border
+                            x:Name="Border"
+                            Grid.Row="1"
+                            n:BackgroundAttachP.ExtBrush="{DynamicResource DefaultHoverBackgroundColor}"
+                            n:BackgroundAttachP.ExtOpacity="0.2"
+                            Background="{DynamicResource DefaultHoverBackgroundColor}"
+                            BorderThickness="1"
+                            CornerRadius="{DynamicResource DefaultMinCornerRadius}"
+                            KeyboardNavigation.DirectionalNavigation="Contained"
+                            KeyboardNavigation.TabIndex="2"
+                            KeyboardNavigation.TabNavigation="Local"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True">
+                            <ContentPresenter
+                                x:Name="PART_SelectedContentHost"
+                                Margin="4"
+                                ContentSource="SelectedContent" />
+                        </Border>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames
+                                            Storyboard.TargetName="Border"
+                                            Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)">
+                                            <EasingColorKeyFrame
+                                                KeyTime="0"
+                                                Value="#FFAAAAAA" />
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--#endregion-->
+
+    <!--#region EmojiPopup-->
+    <Style TargetType="{x:Type nita:EmojiPopup}">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+        <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type nita:EmojiPopup}">
+                    <Popup
+                        x:Name="PART_EmojiPopup"
+                        Width="Auto"
+                        Margin="0"
+                        AllowDrop="False"
+                        AllowsTransparency="True"
+                        Focusable="false"
+                        IsOpen="{Binding IsOpen,
+                                         RelativeSource={RelativeSource FindAncestor,
+                                                                        AncestorType={x:Type nita:EmojiPopup}}}"
+                        Placement="Right"
+                        PopupAnimation="Scroll"
+                        StaysOpen="false">
+                        <TabControl
+                            x:Name="PART_TabControl"
+                            Padding="0"
+                            ItemsSource="{Binding EmojiGroups,
+                                                  RelativeSource={RelativeSource FindAncestor,
+                                                                                 AncestorType={x:Type nita:EmojiPopup}}}"
+                            Style="{StaticResource NitaEmojiPopupTabControlStyle}">
+                            <TabControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Image
+                                        Height="24"
+                                        local:EmojiImage.Source="{Binding Icon}">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="{Binding Name}" />
+                                        </Image.ToolTip>
+                                    </Image>
+                                </DataTemplate>
+                            </TabControl.ItemTemplate>
+                            <TabControl.ContentTemplate>
+                                <DataTemplate>
+                                    <StackPanel
+                                        Name="Part_StackPanel"
+                                        Orientation="Vertical">
+                                        <nita:EmojiPickerToolBar
+                                            EmojiPickerToolArgs="{Binding EmojiPickerToolArgs,
+                                                                          Mode=TwoWay,
+                                                                          RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}"
+                                            IsReset="{Binding IsOpen,
+                                                              ElementName=PART_EmojiPopup}" />
+                                        <TextBlock
+                                            Margin="4"
+                                            FontStyle="Italic"
+                                            Foreground="{DynamicResource DefaultForeground}"
+                                            Text="Search results:"
+                                            Visibility="{Binding IsShowSearch,
+                                                                 Converter={StaticResource BoolToVisibilityConverter},
+                                                                 RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}" />
+                                        <nita:EmojiList
+                                            x:Name="PART_EmojiList"
+                                            EmojiChunkList="{Binding SearchEmojiList,
+                                                                     Mode=TwoWay,
+                                                                     RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}"
+                                            IsOpen="{Binding IsOpen,
+                                                             Mode=TwoWay,
+                                                             RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}"
+                                            Selection="{Binding Selection,
+                                                                Mode=TwoWay,
+                                                                RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}"
+                                            Visibility="{Binding IsShowSearch,
+                                                                 Converter={StaticResource BoolToVisibilityConverter},
+                                                                 RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}" />
+                                        <TextBlock
+                                            Margin="4"
+                                            FontStyle="Italic"
+                                            Foreground="{DynamicResource DefaultForeground}"
+                                            Text="History Selections:"
+                                            Visibility="{Binding IsShowHistorySelection,
+                                                                 Converter={StaticResource BoolToVisibilityConverter},
+                                                                 RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}" />
+                                        <nita:EmojiList
+                                            x:Name="PART_HistorySearchEmojiList"
+                                            EmojiChunkList="{Binding HistorySelectionEmojiList,
+                                                                     Mode=TwoWay,
+                                                                     RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}"
+                                            IsOpen="{Binding IsOpen,
+                                                             Mode=TwoWay,
+                                                             RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}"
+                                            Selection="{Binding Selection,
+                                                                Mode=TwoWay,
+                                                                RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}"
+                                            Visibility="{Binding IsShowHistorySelection,
+                                                                 Converter={StaticResource BoolToVisibilityConverter},
+                                                                 RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}" />
+                                        <TextBlock
+                                            Margin="4"
+                                            FontStyle="Italic"
+                                            Foreground="{DynamicResource DefaultForeground}"
+                                            Text="{Binding Name}" />
+                                        <ContentControl Template="{StaticResource ResourceKey=PART_EmojiListViewTemplate}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </TabControl.ContentTemplate>
+                        </TabControl>
+                    </Popup>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--#endregion-->
+
+
+</ResourceDictionary>

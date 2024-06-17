@@ -1,0 +1,25 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Style/Base.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Resource/Icons.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/Border/Border.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/ClickCanvas/ClickCanvas.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/Icon/Icon.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/ToolTip/ToolTip.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/Button/Button.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/ToggleButton/ToggleButton.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/Ellipse/Ellipse.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/TextBox/TextBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/CheckBox/CheckBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/ImageSwitcher/ImageSwitcher.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/ScrollViewer/ScrollViewer.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/ScrollViewer/ScrollBarStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/TabControl/TabControl.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Controls/TabControl/TabItem.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+
+</ResourceDictionary>

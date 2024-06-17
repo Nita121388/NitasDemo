@@ -1,0 +1,81 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:Nita.ToolKit.BaseUI.Converters"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:nita="clr-namespace:Nita.ToolKit.BaseUI.Controls.ClickCanvas">
+
+
+    <converter:CenterConverter x:Key="CenterConverter" />
+    
+    <Style TargetType="{x:Type nita:ClickCanvas}">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type nita:ClickCanvas}">
+                    <Grid
+                        x:Name="PART_Grid"
+                        Background="Transparent"
+                        ClipToBounds="true"
+                        ZIndex="2">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding ActiveClickStyleCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type nita:ClickCanvas}}}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Canvas
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch">
+                            <Path
+                                Name="PART_DownPath"
+                                Fill="{TemplateBinding ClickColor}">
+                                <Path.Data>
+                                    <EllipseGeometry
+                                        x:Name="PART_DownEllipse"
+                                        RadiusX="0"
+                                        RadiusY="{Binding RelativeSource={RelativeSource Mode=Self},
+                                                          Path=RadiusX}" />
+                                </Path.Data>
+                            </Path>
+                            <ContentPresenter
+                                Content="{TemplateBinding Content}"
+                                IsHitTestVisible="false">
+                                <Canvas.Left>
+                                    <MultiBinding Converter="{StaticResource CenterConverter}">
+                                        <Binding
+                                            Path="ActualWidth"
+                                            RelativeSource="{RelativeSource AncestorType={x:Type nita:ClickCanvas}}" />
+                                        <Binding
+                                            Path="ActualWidth"
+                                            RelativeSource="{RelativeSource Self}" />
+                                    </MultiBinding>
+                                </Canvas.Left>
+                                <Canvas.Top>
+                                    <MultiBinding Converter="{StaticResource CenterConverter}">
+                                        <Binding
+                                            Path="ActualHeight"
+                                            RelativeSource="{RelativeSource AncestorType={x:Type nita:ClickCanvas}}" />
+                                        <Binding
+                                            Path="ActualHeight"
+                                            RelativeSource="{RelativeSource Self}" />
+                                    </MultiBinding>
+                                </Canvas.Top>
+                            </ContentPresenter>
+                        </Canvas>
+                    </Grid>
+                    <!-- <ControlTemplate.Triggers>
+                        <DataTrigger
+                            Binding="{Binding NoBorder,
+                                              RelativeSource={RelativeSource FindAncestor,
+                                                                             AncestorType={x:Type nita:Button}},
+                                              FallbackValue=False}"
+                            Value="True">
+                            <Setter TargetName="PART_Grid" Property="Margin" Value="7" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>-->
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

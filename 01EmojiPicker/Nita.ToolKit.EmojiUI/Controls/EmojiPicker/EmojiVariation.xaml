@@ -1,0 +1,150 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:Nita.ToolKit.EmojiUI.Controls"
+    xmlns:n="http://Nita.ToolKit.BaseUI.io/v1.0"
+    xmlns:nita="clr-namespace:Nita.ToolKit.EmojiUI.Controls.EmojiPicker">
+
+    <n:BoolInverter x:Key="BoolInverter" />
+    <!--#region CellButtonStyle-->
+    <Style
+        x:Key="CellButtonStyle"
+        TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{DynamicResource DefaultBorderBackgroundColor}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border
+                        x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{DynamicResource DefaultCornerRadius}"
+                        SnapsToDevicePixels="true">
+                        <ContentPresenter
+                            x:Name="contentPresenter"
+                            Margin="{TemplateBinding Padding}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Focusable="False"
+                            RecognizesAccessKey="True"
+                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                            Stylus.IsFlicksEnabled="false"
+                            Stylus.IsPressAndHoldEnabled="false"
+                            Stylus.IsTapFeedbackEnabled="false"
+                            Stylus.IsTouchFeedbackEnabled="false" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource DefaultHoverColor}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource DefaultHoverColor}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource DefaultClickColor}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource DefaultHoverColor}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Button.Disabled.Background}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Button.Disabled.Border}" />
+                            <Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="{DynamicResource Button.Disabled.Foreground}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--#endregion-->
+
+    <!--#region NitaEmojiImageStyle-->
+    <Style TargetType="{x:Type nita:EmojiVariation}">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Selection" Value="{Binding Selection, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPopup}}}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type nita:EmojiVariation}">
+                    <Popup
+                        x:Name="PART_VariationPopup"
+                        Margin="1"
+                        AllowDrop="False"
+                        AllowsTransparency="True"
+                        IsOpen="{Binding IsOpen,
+                                         Mode=TwoWay,
+                                         RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiVariation}}}"
+                        Placement="Right"
+                        PopupAnimation="Scroll"
+                        StaysOpen="False">
+                        <Border
+                            Padding="1"
+                            CornerRadius="4">
+                            <ListView
+                                Name="PART_VariationListView"
+                                Height="Auto"
+                                MaxWidth="280"
+                                Padding="0"
+                                Background="{DynamicResource DefaultBorderBackgroundColor}"
+                                BorderThickness="0"
+                                ItemsSource="{Binding VariationList}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListViewItem}">
+                                        <Setter Property="Padding" Value="0" />
+                                        <Setter Property="Margin" Value="0" />
+                                        <Setter Property="BorderThickness" Value="0" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="4">
+                                            <Button
+                                                x:Name="PART_VariationEmojiButton"
+                                                Width="40"
+                                                Height="40"
+                                                Background="Transparent"
+                                                Command="{Binding Path=EmojiPickedCommand,
+                                                                  RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiVariation}}}"
+                                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                                Style="{StaticResource CellButtonStyle}"
+                                                ToolTip="{Binding Path=Name}">
+                                                <Image
+                                                    x:Name="PART_VariationEmojiImage"
+                                                    Height="24"
+                                                    local:EmojiImage.Source="{Binding Path=Text}"
+                                                    Stylus.IsFlicksEnabled="false"
+                                                    Stylus.IsPressAndHoldEnabled="false"
+                                                    Stylus.IsTapFeedbackEnabled="false"
+                                                    Stylus.IsTouchFeedbackEnabled="false" />
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="PreviewMouseDown">
+                                                        <i:InvokeCommandAction
+                                                            Command="{Binding EmojiPickedCommand,
+                                                                              RelativeSource={RelativeSource FindAncestor,
+                                                                                                             AncestorType={x:Type nita:EmojiVariation}}}"
+                                                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Button}}" />
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </Button>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Border>
+                    </Popup>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--#endregion-->
+
+</ResourceDictionary>

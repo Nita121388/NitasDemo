@@ -1,0 +1,144 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Nita.ToolKit.EmojiUI.Controls"
+    xmlns:n="http://Nita.ToolKit.BaseUI.io/v1.0"
+    xmlns:nita="clr-namespace:Nita.ToolKit.EmojiUI.Controls.EmojiPicker">
+
+    <!--#region MergedDictionaries-->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.EmojiUI;component/Controls/EmojiPicker/EmojiVariation.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    <!--#endregion-->
+
+
+    <!--#region  Converter-->
+    <n:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
+    <!--#endregion-->
+    <!--#region CellTemplate-->
+    <DataTemplate x:Key="CellTemplate">
+        <Grid>
+            <ToggleButton
+                x:Name="PART_EmojiCellButton"
+                Width="40"
+                Height="40"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                Command="{Binding Path=EmojiPickedCommand,
+                                  RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiList}}}"
+                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                Opacity="1"
+                Style="{DynamicResource BaseToggleButtonStyle}">
+                <ToggleButton.ToolTip>
+                    <n:ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding CNName}" />
+                            <TextBlock Text="{Binding CNNamesString}" />
+                        </StackPanel>
+                    </n:ToolTip>
+                </ToggleButton.ToolTip>
+                <Grid>
+                    <Image
+                        Height="24"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        local:EmojiImage.Source="{Binding Text}"
+                        Opacity="1" />
+                    <Polygon
+                        Width="6"
+                        Height="6"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Fill="Black"
+                        Opacity="1"
+                        Points="0,1 1,1 1,0"
+                        Stretch="Fill"
+                        Visibility="{Binding HasVariations,
+                                             Converter={StaticResource BoolToVisibilityConverter}}" />
+                    <nita:EmojiVariation
+                        x:Name="PART_VariationPopup"
+                        Opacity="1" />
+                </Grid>
+            </ToggleButton>
+        </Grid>
+    </DataTemplate>
+    <!--#endregion-->
+
+    <Style TargetType="{x:Type nita:EmojiList}">
+        <Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type nita:EmojiList}">
+                    <Border
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <ListView
+                            Name="PART_EmojiListView"
+                            Height="Auto"
+                            MaxHeight="320"
+                            Margin="2,2,5,2"
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            ItemsSource="{Binding EmojiChunkList,
+                                                  RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiList}}}"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                            VirtualizingStackPanel.IsVirtualizing="True"
+                            VirtualizingStackPanel.VirtualizationMode="Recycling">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="Padding" Value="0" />
+                                    <Setter Property="Margin" Value="0" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                <ContentPresenter />
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ItemsControl
+                                        ItemTemplate="{StaticResource ResourceKey=CellTemplate}"
+                                        ItemsSource="{Binding}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.Template>
+                                <ControlTemplate>
+                                    <n:ScrollViewer
+                                        Padding="10,2,15,2"
+                                        VerticalScrollBarVisibility="Auto">
+                                        <ItemsPresenter />
+                                    </n:ScrollViewer>
+                                </ControlTemplate>
+                            </ListView.Template>
+                        </ListView>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

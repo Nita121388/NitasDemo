@@ -1,0 +1,74 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:Nita.ToolKit.BaseUI.Converters"
+    xmlns:nita="clr-namespace:Nita.ToolKit.BaseUI.Controls.Border">
+    <!-- <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Style/Base.xaml" />
+    </ResourceDictionary.MergedDictionaries>-->
+
+    <converter:MouseOverStyleToStringConverter x:Key="MouseOverStyleToStringConverter" />
+
+    <Style TargetType="{x:Type nita:Border}">
+        <Setter Property="BorderBrush" Value="{DynamicResource DefaultBorderBrush}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource DefaultBorderThickness}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DefaultBorderCornerRadius}" />
+        <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Background" Value="{DynamicResource DefaultBorderBackgroundColor}" />
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TransformGroup>
+                    <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1" />
+                    <RotateTransform x:Name="rotateTransform" Angle="0" />
+                </TransformGroup>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource FocusedBorderBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="{DynamicResource DisableOpacity}" />
+            </Trigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding MouseOverStyle, Converter={StaticResource MouseOverStyleToStringConverter}, RelativeSource={RelativeSource Self}}" Value="Zoom" />
+                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1.1" ScaleY="1.1" />
+                            <RotateTransform Angle="0" />
+                        </TransformGroup>
+                    </Setter.Value>
+                </Setter>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding MouseOverStyle, Converter={StaticResource MouseOverStyleToStringConverter}, RelativeSource={RelativeSource Self}}" Value="ChangeColor" />
+                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Background" Value="{Binding MouseOverBackground, RelativeSource={RelativeSource Self}}" />
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding MouseOverStyle, RelativeSource={RelativeSource Self}, Converter={StaticResource MouseOverStyleToStringConverter}}" Value="ZoomAndChangeColor" />
+                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1.1" ScaleY="1.1" />
+                            <RotateTransform Angle="0" />
+                        </TransformGroup>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Background" Value="{Binding MouseOverBackground, RelativeSource={RelativeSource Self}}" />
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

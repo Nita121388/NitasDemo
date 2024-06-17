@@ -1,0 +1,46 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:Nita.ToolKit.BaseUI.Converters"
+    xmlns:local="clr-namespace:Nita.ToolKit.BaseUI.Controls.ToolTip">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.BaseUI;component/Style/Base.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <converter:StringVisibilityConverter x:Key="StringVisibilityConverter" />
+
+    <!--#region ToolTip-->
+    <Style TargetType="{x:Type local:ToolTip}">
+        <Setter Property="Placement" Value="Bottom" />
+        <Setter Property="ToolTipService.InitialShowDelay" Value="100" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:ToolTip}">
+                    <Border
+                        Width="Auto"
+                        Height="Auto"
+                        Padding="5"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="White"
+                        BorderBrush="{DynamicResource DefaultBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <Grid>
+                            <TextBlock
+                                Padding="5"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="{DynamicResource DefaultForeground}"
+                                Text="{TemplateBinding Content}"
+                                Visibility="{TemplateBinding Content,
+                                                             Converter={StaticResource StringVisibilityConverter},
+                                                             ConverterParameter=Inverse}" />
+                            <ContentPresenter />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

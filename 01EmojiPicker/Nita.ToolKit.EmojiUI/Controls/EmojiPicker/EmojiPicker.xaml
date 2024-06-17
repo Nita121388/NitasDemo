@@ -1,0 +1,73 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Nita.ToolKit.EmojiUI.Controls"
+    xmlns:n="http://Nita.ToolKit.BaseUI.io/v1.0"
+    xmlns:nita="clr-namespace:Nita.ToolKit.EmojiUI.Controls.EmojiPicker">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Nita.ToolKit.EmojiUI;component/Controls/EmojiPicker/ToggleButton.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <n:SizeTypeConverter x:Key="SizeTypeConverter" />
+    <n:TooltipVisibilityConverter x:Key="TooltipVisibilityConverter" />
+    <n:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    <n:BoolInverter x:Key="BoolInverter" />
+
+    <!--#region NitaEmojiImageStyle ToggleButton-->
+    <Style
+        x:Key="NitaEmojiImageStyle"
+        TargetType="{x:Type Image}">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Width" Value="{Binding SizeType, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type nita:EmojiPicker}}, Converter={StaticResource SizeTypeConverter}, ConverterParameter=Image}" />
+        <Setter Property="Height" Value="{Binding Width, RelativeSource={RelativeSource Self}}" />
+        <Setter Property="local:EmojiImage.Source" Value="{Binding Selection, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type nita:EmojiPicker}}}" />
+    </Style>
+    <!--#endregion NitaIconStyle-->
+
+    <!--#region NitaEmojiImageStyle-->
+    <Style TargetType="{x:Type nita:EmojiPicker}">
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type nita:EmojiPicker}">
+                    <StackPanel>
+                        <n:Border BorderThickness="0">
+                            <ToggleButton
+                                x:Name="PART_PickerButton"
+                                Style="{StaticResource BaseToggleButtonStyle}">
+                                <Image
+                                    x:Name="PART_PickerImage"
+                                    Style="{StaticResource NitaEmojiImageStyle}" />
+                            </ToggleButton>
+                            <n:Border.ToolTip>
+                                <ToolTip
+                                    Content="长按切换随机Emoji；点击选择Emoji"
+                                    Style="{DynamicResource NitaToolTipStyle}"
+                                    Visibility="{TemplateBinding ToolTip,
+                                                                 Converter={StaticResource TooltipVisibilityConverter}}" />
+                            </n:Border.ToolTip>
+                        </n:Border>
+                        <nita:EmojiPopup
+                            x:Name="PART_NitaEmojiPopup"
+                            IsOpen="{Binding IsChecked,
+                                             ElementName=PART_PickerButton,
+                                             Mode=TwoWay}"
+                            Selection="{Binding Selection,
+                                                RelativeSource={RelativeSource AncestorType={x:Type nita:EmojiPicker}},
+                                                Mode=TwoWay}" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--#endregion-->
+
+</ResourceDictionary>
