@@ -32,7 +32,7 @@
 
 #### 支持中文搜索Emoji：
 
-[angelofan/emoji-json: 适配了 简体中文 的 emoji.json 数据源，与 unicode 联盟的数据源保持同步并版本对齐 (github.com)](https://github.com/angelofan/emoji-json)
+[该项目基于OSX10.11中文输入法中的 emoji.plist 文件作为数据来源](https://github.com/dofy/apple-emoji-dict)
 
 
 
