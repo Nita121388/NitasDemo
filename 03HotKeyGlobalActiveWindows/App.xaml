@@ -1,0 +1,15 @@
+﻿<Application
+    x:Class="HotKeyGlobalActiveWindows.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:HotKeyGlobalActiveWindows"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
+    StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <tb:TaskbarIcon
+            x:Key="Taskbar"
+            IconSource="/Assets/Nita.ico"
+            LeftClickCommand="{Binding ShowMainWindowCommand}"
+            ToolTipText="你好！可点击系统托盘或按下Alt+O再次打开窗口" />
+    </Application.Resources>
+</Application>
