@@ -1,0 +1,190 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:WPFSlider.Converters"
+    xmlns:local="clr-namespace:WPFSlider"
+    xmlns:n="http://Nita.ToolKit.BaseUI.io/v1.0">
+
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/WPFSlider;component/Themes/Base.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+
+    <converter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
+    <!--#region ThumbEffect-->
+    <DropShadowEffect
+        x:Key="UnhoverThumbEffect"
+        BlurRadius="5"
+        Opacity="0.3"
+        ShadowDepth="0"
+        Color="{StaticResource MainMediaColor}" />
+    <DropShadowEffect
+        x:Key="HoverThumbEffect"
+        BlurRadius="5"
+        Opacity="0.5"
+        ShadowDepth="0"
+        Color="{StaticResource MainMediaColor}" />
+    <DropShadowEffect
+        x:Key="DragThumbEffect"
+        BlurRadius="8"
+        Opacity="1"
+        ShadowDepth="0"
+        Color="{StaticResource MainMediaColor}" />
+
+    <Style
+        x:Key="DefaultSliderThumbStyle"
+        TargetType="Thumb">
+        <Setter Property="Width" Value="15" />
+        <Setter Property="Height" Value="15" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Ellipse
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        Panel.ZIndex="2"
+                        Effect="{StaticResource UnhoverThumbEffect}"
+                        Fill="{TemplateBinding Background}" />
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Effect" Value="{StaticResource HoverThumbEffect}" />
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+                        <Trigger Property="IsDragging" Value="True">
+                            <Setter Property="Effect" Value="{StaticResource DragThumbEffect}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--#endregion-->
+
+
+    <Style
+        x:Key="DecreaseRepeatButtonStyle"
+        TargetType="RepeatButton">
+        <Setter Property="Height" Value="4" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="Background" Value="{StaticResource MainColor}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="2">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style
+        x:Key="IncreaseRepeatButtonStyle"
+        TargetType="RepeatButton">
+        <Setter Property="Height" Value="4" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="Background" Value="{StaticResource UnfinishedColor}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="2">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style TargetType="{x:Type local:Slider}">
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="MinHeight" Value="15" />
+        <Setter Property="Margin" Value="20" />
+        <Setter Property="Maximum" Value="100" />
+        <Setter Property="IsSnapToTickEnabled" Value="True" />
+        <Setter Property="IsMoveToPointEnabled" Value="True" />
+        <Setter Property="LargeChange" Value="10" />
+        <Setter Property="SmallChange" Value="1" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:Slider}">
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="{Binding DisplayValue,
+                                           RelativeSource={RelativeSource AncestorType={x:Type local:Slider}}}"
+                            Visibility="{Binding IsShowLeftTick,
+                                                 RelativeSource={RelativeSource AncestorType={x:Type local:Slider}},
+                                                 Converter={StaticResource BoolToVisibilityConverter}}" />
+                        <Grid
+                            Grid.Column="1"
+                            Margin="0"
+                            HorizontalAlignment="Stretch">
+                            <Track
+                                Name="PART_Track"
+                                Width="{TemplateBinding Width}"
+                                Margin="0">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton
+                                        Command="{x:Static Slider.DecreaseLarge}"
+                                        Style="{StaticResource DecreaseRepeatButtonStyle}" />
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb
+                                        x:Name="PART_Thumb"
+                                        Style="{StaticResource DefaultSliderThumbStyle}" />
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton
+                                        Height="4"
+                                        Background="Gray"
+                                        Command="{x:Static Slider.IncreaseLarge}"
+                                        Style="{StaticResource IncreaseRepeatButtonStyle}" />
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                            <local:TickBar
+                                x:Name="TopTick"
+                                Width="{TemplateBinding Width}"
+                                Height="4"
+                                CurrentTick="{TemplateBinding Value}"
+                                Fill="White"
+                                IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                                Maximum="{TemplateBinding Maximum}"
+                                Minimum="{TemplateBinding Minimum}"
+                                NitaTickPlacement="{TemplateBinding NitaTickPlacement}"
+                                Opacity="1"
+                                TickFrequency="{TemplateBinding TickFrequency}"
+                                TickRenderMode="{TemplateBinding TickRenderMode}"
+                                Ticks="{TemplateBinding Ticks}"
+                                Visibility="{Binding IsShowTick,
+                                                     Converter={StaticResource BoolToVisibilityConverter},
+                                                     RelativeSource={RelativeSource AncestorType={x:Type local:Slider}}}" />
+                        </Grid>
+                        <TextBlock
+                            Grid.Column="2"
+                            Text="{Binding DisplayValue,
+                                           RelativeSource={RelativeSource AncestorType={x:Type local:Slider}}}"
+                            Visibility="{Binding IsShowRightTick,
+                                                 RelativeSource={RelativeSource AncestorType={x:Type local:Slider}},
+                                                 Converter={StaticResource BoolToVisibilityConverter}}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

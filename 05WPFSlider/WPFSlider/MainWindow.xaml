@@ -1,0 +1,221 @@
+﻿<Window
+    x:Class="WPFSlider.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:WPFSlider"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="MainWindow"
+    Width="800"
+    Height="450"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+
+        <Color
+            x:Key="BorderLightColor"
+            A="255"
+            B="209"
+            G="48"
+            R="146" />
+
+        <Color
+            x:Key="BorderDarkColor"
+            A="255"
+            B="132"
+            G="79"
+            R="30" />
+
+        <Style
+            x:Key="SliderThumbStyle"
+            TargetType="{x:Type Thumb}">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="Height" Value="14" />
+            <Setter Property="Width" Value="14" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Ellipse
+                            x:Name="Ellipse"
+                            StrokeThickness="7">
+                            <Ellipse.Stroke>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <LinearGradientBrush.GradientStops>
+                                        <GradientStop Offset="0.0" Color="{StaticResource BorderLightColor}" />
+                                        <GradientStop Offset="1.0" Color="{StaticResource BorderDarkColor}" />
+                                    </LinearGradientBrush.GradientStops>
+                                </LinearGradientBrush>
+                            </Ellipse.Stroke>
+                        </Ellipse>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style
+            x:Key="CustomToolTipStyle"
+            TargetType="ToolTip">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="HasDropShadow" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+                        <Border
+                            Background="LightBlue"
+                            BorderBrush="DarkBlue"
+                            BorderThickness="2"
+                            CornerRadius="5">
+                            <ContentPresenter
+                                Margin="10"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+    </Window.Resources>
+    <StackPanel>
+        <!--  Slider 1  -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="鼠标悬浮时展示设定刻度值" />
+            <local:Slider
+                Grid.Row="1"
+                Width="300"
+                Height="20"
+                TickRenderMode="FixedTicksOnMouseOver"
+                Ticks="0,10,20,30,40,50,60,70,80,90,100" />
+        </Grid>
+
+        <!--  Slider 3  -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="鼠标拖动滑动条时，显示当前刻度值；刻度位于右侧;支持设置单位" />
+            <local:Slider
+                Grid.Row="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Maximum="100"
+                Minimum="0"
+                NitaTickPlacement="Right"
+                TickFrequency="1"
+                TickRenderMode="AutoShowOnMouseMove"
+                ValueUnit="%"
+                Value="{Binding Volume,
+                                RelativeSource={RelativeSource FindAncestor,
+                                                               AncestorType={x:Type local:MainWindow}}}" />
+        </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="鼠标拖动滑动条时，显示当前刻度值；刻度位于左侧;支持设置单位" />
+            <local:Slider
+                Grid.Row="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Maximum="100"
+                Minimum="0"
+                NitaTickPlacement="Left"
+                TickFrequency="1"
+                TickRenderMode="AutoShowOnMouseMove"
+                ValueUnit="%"
+                Value="{Binding Volume,
+                                RelativeSource={RelativeSource FindAncestor,
+                                                               AncestorType={x:Type local:MainWindow}}}" />
+        </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="鼠标拖动滑动条时，显示当前刻度值；刻度位于上方" />
+            <local:Slider
+                Grid.Row="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Maximum="100"
+                Minimum="0"
+                NitaTickPlacement="Top"
+                TickFrequency="1"
+                TickRenderMode="AutoShowOnMouseMove"
+                Value="{Binding Volume,
+                                RelativeSource={RelativeSource FindAncestor,
+                                                               AncestorType={x:Type local:MainWindow}}}" />
+        </Grid>
+        <Slider
+            IsSnapToTickEnabled="True"
+            Maximum="100"
+            Minimum="0"
+            Orientation="Horizontal"
+            TickFrequency="10"
+            TickPlacement="BottomRight"
+            Value="50" />
+        <Thumb Style="{StaticResource SliderThumbStyle}" />
+
+        <Slider
+            Width="300"
+            Height="50"
+            Margin="10"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            AutoToolTipPlacement="BottomRight"
+            AutoToolTipPrecision="1"
+            IsSnapToTickEnabled="True"
+            Maximum="10"
+            Minimum="0"
+            TickFrequency="1"
+            TickPlacement="BottomRight" />
+
+        <Slider
+            Width="300"
+            Height="50"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            AutoToolTipPlacement="BottomRight"
+            AutoToolTipPrecision="1"
+            IsSnapToTickEnabled="True"
+            Maximum="10"
+            Minimum="0"
+            TickFrequency="1"
+            TickPlacement="BottomRight"
+            ToolTipService.ShowsToolTipOnKeyboardFocus="True">
+            <Slider.ToolTip>
+                <ToolTip Style="{StaticResource CustomToolTipStyle}" />
+            </Slider.ToolTip>
+        </Slider>
+        <local:FormattedSlider
+            AutoToolTipFormat="{}{0}% used"
+            AutoToolTipPlacement="BottomRight"
+            DecimalPlaces="2"
+            LargeChange="10"
+            Maximum="100"
+            SmallChange="1"
+            TickFrequency="10"
+            TickPlacement="BottomRight" />
+
+    </StackPanel>
+</Window>
