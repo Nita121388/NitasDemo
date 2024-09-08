@@ -1,0 +1,284 @@
+﻿<Window
+    x:Class="BehaviorDemo.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:BehaviorDemo"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="MainWindow"
+    Width="800"
+    Height="450"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <Storyboard x:Key="MyStoryboard">
+            <DoubleAnimation
+                Storyboard.TargetName="MyRectangle"
+                Storyboard.TargetProperty="Width"
+                From="100"
+                To="300"
+                Duration="0:0:0.5" />
+        </Storyboard>
+    </Window.Resources>
+    <StackPanel Orientation="Vertical">
+        <Separator />
+        <Label
+            Content="Trigger（触发器）用于在特定条件下自动更改控件的样式或行为。"
+            FontSize="24" />
+        <StackPanel
+            Margin="10"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Background="Transparent"
+                Text="Property Trigger：当依赖属性的值发生变化时触发。"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+            <Rectangle
+                Width="100"
+                Height="100">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle">
+                        <Setter Property="Fill" Value="Green" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Fill" Value="Red" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+        </StackPanel>
+        <StackPanel
+            Margin="10"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <ToggleButton
+                Name="toggleButton"
+                Content="控制IsEnable属性的Toggle Button" />
+            <TextBlock
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="DataTrigger:当绑定到的数据 toggleButton的IsChecked属性 ，发生变化时触发。">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Style.Triggers>
+                            <DataTrigger
+                                Binding="{Binding IsChecked,
+                                                  ElementName=toggleButton}"
+                                Value="False">
+                                <Setter Property="Foreground" Value="Pink" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </StackPanel>
+        <Button
+            Width="500"
+            Height="100"
+            Margin="10"
+            Content="EventTrigger “Button.Click” 事件触发时，透明度发生变化">
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.Click">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                AutoReverse="True"
+                                Storyboard.TargetProperty="Opacity"
+                                From="1.0"
+                                To="0.0"
+                                Duration="0:0:1" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <StackPanel
+            Margin="10"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <ToggleButton
+                Name="toggleButton1"
+                Content="条件1" />
+            <ToggleButton
+                Name="toggleButton2"
+                Content="条件2" />
+            <TextBlock
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="toggleButton1 和 toggleButton2 同时为True时，">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=IsChecked, ElementName=toggleButton1}" Value="True" />
+                                    <Condition Binding="{Binding Path=IsChecked, ElementName=toggleButton2}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="Purple" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </StackPanel>
+        <Button
+            Width="300"
+            Height="50"
+            Margin="10"
+            Content="当鼠标移入并按下时，按钮背景变为深蓝色"
+            OverridesDefaultStyle="True">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border
+                                    x:Name="Border"
+                                    Background="{TemplateBinding Background}">
+                                    <ContentPresenter
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="True" />
+                                            <Condition Property="IsPressed" Value="True" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter TargetName="Border" Property="Background" Value="DarkBlue" />
+                                    </MultiTrigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Separator />
+        <Label
+            Content="Behavior "
+            FontSize="24" />
+
+        <StackPanel
+            Margin="10"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Background="Transparent"
+                Text="EventTrigger 绑定到控件的事件。"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+
+            <Button
+                Width="100"
+                Height="30"
+                Margin="5"
+                Content="Click Me">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                        <i:ChangePropertyAction
+                            PropertyName="Background"
+                            Value="Red" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+        </StackPanel>
+        <StackPanel
+            Margin="10"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Background="Transparent"
+                Text="自定义方法缩小行为。"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+            <Border
+                Width="100"
+                Height="100"
+                Padding="5"
+                Background="LightGray">
+                <i:Interaction.Behaviors>
+                    <local:ZoomWithWheelBehavior
+                        MaxScale="3.0"
+                        MinScale="0.5"
+                        ScaleFactor="0.1" />
+                </i:Interaction.Behaviors>
+            </Border>
+        </StackPanel>
+        <StackPanel
+            Margin="10"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Background="Transparent"
+                Text="自带鼠标拖拽行为：MouseDragElementBehavior。"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+            <Border
+                Width="100"
+                Height="100"
+                Padding="5"
+                Background="LightGray">
+                <i:Interaction.Behaviors>
+                    <local:ZoomWithWheelBehavior
+                        MaxScale="3.0"
+                        MinScale="0.5"
+                        ScaleFactor="0.1" />
+                </i:Interaction.Behaviors>
+            </Border>
+        </StackPanel>
+        <StackPanel
+            Margin="10"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Background="Transparent"
+                Text="鼠标进入控件时播放动画。"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+            <Rectangle
+                x:Name="MyRectangle"
+                Width="100"
+                Height="100"
+                Fill="Blue">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseEnter">
+                        <i:ControlStoryboardAction
+                            ControlStoryboardOption="Play"
+                            Storyboard="{StaticResource MyStoryboard}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Rectangle>
+        </StackPanel>
+        <Separator />
+        <Label
+            Content="实现一个简单的事件触发命令Demo"
+            FontSize="24" />
+        <StackPanel
+            Margin="10"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <Button
+                Width="300"
+                Height="30"
+                local:EventTriggerBehavior.Command="{Binding MessageCommand}"
+                local:EventTriggerBehavior.EventName="PreviewMouseLeftButtonDown"
+                Content="简单实现根据事件名绑定到命令" />
+        </StackPanel>
+    </StackPanel>
+</Window>
