@@ -3,15 +3,13 @@
     <Metadata>
         <Identity Id="NitasTool.9a3795db-88c8-48c8-a58c-dcc2e6832898" Version="1.0" Language="zh-CN" Publisher="Nita" />
         <DisplayName>CreateFileQuickly</DisplayName>
-        <Description xml:space="preserve">This is a simple and compact Visual Studio plugin demo🔨, designed to reduce a small hassle in daily development.
+        <Description xml:space="preserve">This is a simple and compact Visual Studio plugin demo &amp;#128296; designed to reduce daily development hassles. It includes features for:
 
-It currently has the following features:
+1. **Create New File**: Double-click or select a word in your project code, right-click, and choose “&amp;#127381; Create To New File” from the context menu. The plugin creates a new file named after the selected word in the same folder and adds it to your project.
+2. **Extract Complete Content**: Select an interface, class, enumeration, or structure name, and the plugin extracts its entire content (including comments) into a new file without deleting the source code.
+3. **File Conflict Handling**: If a file with the same name exists, the plugin prompts you to choose between overwriting or automatically renaming it.
 
-- ⚡**Create New File**: Simply double-click or select a word in the project code, then right-click and choose the “🆕Create To New File” option from the context menu. The plugin will create a new file named after the selected word in the same folder and automatically add it to your project.
-- 📝**Extract Complete Content**: If you select the name of an interface, class, enumeration, or structure, the plugin will automatically extract the entire content of the interface, class, enumeration, or structure, including comments, and generate these contents into the new file.The source code content is not deleted.
-- ⚠️**File Conflict Handling**: If a file with the same name already exists in the same path, the plugin will prompt you to choose whether to overwrite or automatically rename it.
-
-👀 **Source code available**: [TODO]</Description>
+**Source code**: [GitHub](https://github.com/your-repo-link)</Description>
         <Icon>Resources\1f469-1f3fb-200d-1f4bb.png</Icon>
         <Tags>Productivity Tool,Create Class File Quickly,Developer Tool,Open Source,</Tags>
     </Metadata>

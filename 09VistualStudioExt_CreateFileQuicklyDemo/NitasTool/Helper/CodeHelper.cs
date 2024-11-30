@@ -64,20 +64,12 @@ namespace NitasTool.Helper
             //string indentForClassCode = indent + "\t"; // 双缩进用于类内部的代码
 
             string[] lines = codeContext.ElementContext;
-            bool firstLine = true;
+            //bool firstLine = true;
             foreach (string line in lines)
             {
-                if (firstLine)
-                {
-                    // 类定义开始行，只添加单缩进
-                    sb.Append(indent).AppendLine(line);
-                }
-                else
-                {
-                    // 其他行
-                    sb.AppendLine(line);
-                }
-                firstLine = false;
+                // 其他行
+                sb.AppendLine(line);
+                //firstLine = false;
             }
 
             // end
