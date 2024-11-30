@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" ?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+    <Metadata>
+        <Identity Id="NitasTool.9a3795db-88c8-48c8-a58c-dcc2e6832898" Version="1.0" Language="zh-CN" Publisher="Nita" />
+        <DisplayName>CreateFileQuickly</DisplayName>
+        <Description xml:space="preserve">This is a simple and compact Visual Studio plugin demo🔨, designed to reduce a small hassle in daily development.
+
+It currently has the following features:
+
+- ⚡**Create New File**: Simply double-click or select a word in the project code, then right-click and choose the “🆕Create To New File” option from the context menu. The plugin will create a new file named after the selected word in the same folder and automatically add it to your project.
+- 📝**Extract Complete Content**: If you select the name of an interface, class, enumeration, or structure, the plugin will automatically extract the entire content of the interface, class, enumeration, or structure, including comments, and generate these contents into the new file.The source code content is not deleted.
+- ⚠️**File Conflict Handling**: If a file with the same name already exists in the same path, the plugin will prompt you to choose whether to overwrite or automatically rename it.
+
+👀 **Source code available**: [TODO]</Description>
+        <Icon>Resources\1f469-1f3fb-200d-1f4bb.png</Icon>
+        <Tags>Productivity Tool,Create Class File Quickly,Developer Tool,Open Source,</Tags>
+    </Metadata>
+    <Installation>
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
+            <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+    </Dependencies>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,18.0)" DisplayName="Visual Studio core editor" />
+    </Prerequisites>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    </Assets>
+</PackageManifest>
