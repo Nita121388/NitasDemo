@@ -1,6 +1,7 @@
 ﻿using EnvDTE;
-using Microsoft.VisualStudio.Shell.Interop;
+using NitasTool.Entity;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -8,39 +9,45 @@ namespace NitasTool.Helper
 {
     public class CodeHelper
     {
-
         /// <summary>
         /// 获取当前选中的文本
         /// </summary>
         /// <returns></returns>
         public static string GetSelectedText(Document document)
         {
-            var selection = (TextSelection)document.Selection;
-            var selectedText = selection.Text;
-
-            if (string.IsNullOrEmpty(selectedText))
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            try
             {
-                // 如果没有选中的文本，则获取当前光标所在位置的单词
-                var activePoint = selection.ActivePoint;
-                var lineText = activePoint.CreateEditPoint().GetText(activePoint.LineLength);
-                int start = activePoint.AbsoluteCharOffset - 1;
-                int end = start;
+                var selection = (TextSelection)document.Selection;
+                var selectedText = selection.Text;
 
-                // 找到当前单词的起始和结束位置
-                while (start > 0 && char.IsLetterOrDigit(lineText[start]))
+                if (string.IsNullOrEmpty(selectedText))
                 {
-                    start--;
-                }
-                while (end < lineText.Length && char.IsLetterOrDigit(lineText[end]))
-                {
-                    end++;
-                }
+                    // 如果没有选中的文本，则获取当前光标所在位置的单词
+                    var activePoint = selection.ActivePoint;
+                    var lineText = activePoint.CreateEditPoint().GetText(activePoint.LineLength);
+                    int start = activePoint.AbsoluteCharOffset - 1;
+                    int end = start;
 
-                // 提取单词
-                selectedText = lineText.Substring(start, end - start).Trim();
+                    // 找到当前单词的起始和结束位置
+                    while (start > 0 && char.IsLetterOrDigit(lineText[start]))
+                    {
+                        start--;
+                    }
+                    while (end < lineText.Length && char.IsLetterOrDigit(lineText[end]))
+                    {
+                        end++;
+                    }
+
+                    // 提取单词
+                    selectedText = lineText.Substring(start, end - start).Trim();
+                }
+                return selectedText;
             }
-
-            return selectedText;
+            catch
+            {
+                throw new Exception("解析选择的文本失败，请重新尝试！");
+            }
         }
 
         /// <summary>
@@ -75,39 +82,6 @@ namespace NitasTool.Helper
             // end
             sb.AppendLine("}");
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// element是否支持独立成文件
-        /// </summary>
-        /// <param name="element"></param>
-        /// <returns></returns>
-        public static bool IsCanBeToCreateFile(CodeElement element)
-        {
-            if (element.Kind == vsCMElement.vsCMElementClass
-                || element.Kind == vsCMElement.vsCMElementEnum
-                || element.Kind == vsCMElement.vsCMElementInterface
-                || element.Kind == vsCMElement.vsCMElementStruct
-                  )
-            {
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 获取指定起始点和结束点之间的文本中间内容，并按行分割成字符串数组。
-        /// </summary>
-        /// <param name="startPoint">文本起始点。</param>
-        /// <param name="endPoint">文本结束点。</param>
-        /// <returns>包含中间文本内容（按行分割）的字符串数组。</returns>
-        public static string[] GetMiddleContextLines(TextPoint startPoint, TextPoint endPoint)
-        {
-            // 使用起始点的编辑点获取起始点到结束点之间的文本内容
-            string textContent = startPoint.CreateEditPoint().GetText(endPoint);
-
-            // 按行分割
-            return textContent.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
         }
 
         /// <summary>
@@ -177,11 +151,115 @@ namespace NitasTool.Helper
             codeContext.ElementContext = codeLines;
             return codeContext;
         }
-    }
-    public class CodeContext
-    {
-        public string[] ElementContext { get; set; }
-        public string NameSpace { get; set; }
-        public string Name { get; set; }
+
+        public static SelectTextType ContentType(string content)
+        {
+            //content单行，不包含dot
+            if (IsSingleLine(content) && content.IndexOf('.') == -1)
+            { 
+                return SelectTextType.Word;
+            }
+            //content单行，包含dot
+            else if (IsSingleLine(content) && content.IndexOf('.') != -1)
+            {
+                return SelectTextType.File;
+            }
+            //content多行
+            else
+            {
+                return SelectTextType.Folder;
+            }
+        }
+
+        public static Folder GetFolder(string content)
+        { 
+            var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var folder = ParseLines(lines);
+            return folder;
+        }
+
+        #region private methods
+        private static Folder ParseLines(string[] lines)
+        {
+            try
+            {
+                Folder root = new Folder { Name = "Root" };
+                var lineSpaceCounts = GetLineSpaceCounts(lines);
+                var lineSpaceCountOrders = lineSpaceCounts.Distinct().OrderBy(c => c).ToList();
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    var line = lines[i];
+                    int level = lineSpaceCountOrders.IndexOf(lineSpaceCounts[i]) + 1;
+                    string name = line.Trim();
+
+                    var parentFolder = root.GetFolderByLevel(level - 1);
+                    if (name.IndexOf('.') == -1)
+                    {
+                        parentFolder.Folders.Add(new Folder { Name = name, ParentFolder = parentFolder });
+                    }
+                    else
+                    {
+                        parentFolder.Files.Add(name);
+                    }
+                }
+                return root;
+            }
+            catch 
+            { 
+                throw new Exception("解析文件失败,请保证选择的文本具有合理的层级关系！");
+            }
+        }
+
+        private static List<int> GetLineSpaceCounts(string[] lines)
+        {
+            var lineSpaceCount = new List<int>();
+            foreach (var line in lines)
+            {
+                int count = line.TakeWhile(c => c == ' ').Count();
+                lineSpaceCount.Add(count);
+            }
+            return lineSpaceCount;
+        }
+
+        private static bool IsSingleLine(string content)
+        {
+            return !content.Contains(Environment.NewLine);
+        }
+
+        /// <summary>
+        /// element是否支持独立成文件
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        private static bool IsCanBeToCreateFile(CodeElement element)
+        {
+            if (element.Kind == vsCMElement.vsCMElementClass
+                || element.Kind == vsCMElement.vsCMElementEnum
+                || element.Kind == vsCMElement.vsCMElementInterface
+                || element.Kind == vsCMElement.vsCMElementStruct
+                  )
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 获取指定起始点和结束点之间的文本中间内容，并按行分割成字符串数组。
+        /// </summary>
+        /// <param name="startPoint">文本起始点。</param>
+        /// <param name="endPoint">文本结束点。</param>
+        /// <returns>包含中间文本内容（按行分割）的字符串数组。</returns>
+        private static string[] GetMiddleContextLines(TextPoint startPoint, TextPoint endPoint)
+        {
+            // 使用起始点的编辑点获取起始点到结束点之间的文本内容
+            string textContent = startPoint.CreateEditPoint().GetText(endPoint);
+
+            // 按行分割
+            return textContent.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+        }
+        #endregion
+
+
     }
 }

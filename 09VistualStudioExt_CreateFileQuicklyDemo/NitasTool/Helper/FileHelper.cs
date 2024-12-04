@@ -1,82 +1,219 @@
 ﻿using EnvDTE;
+using NitasTool.Entity;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static NitasTool.Command1;
 
 namespace NitasTool.Helper
 {
+
     internal class FileHelper
     {
-        public static async Task CreateAndAddFileAsync(string filePath, string classCode, Project project)
+        public static async Task CreateNewItemAsyncByCreateItemInfoAsync(CreateItemInfo createItemInfo)
         {
-            // Create new file with the class code asynchronously
-             File.WriteAllText(filePath, classCode);
-
-            // Add the new file to the project
-            ProjectItem newItem = project.ProjectItems.AddFromFile(filePath);
-
-            // Open the new file in the text editor
-            newItem.Open(EnvDTE.Constants.vsViewKindTextView).Visible = true;
-        }
-
-        public static string GetUniqueFilePath(string projectPath, string baseFileName)
-        {
-            int counter = 1;
-            string newFilePath;
-            do
+            var project = createItemInfo.Document.ProjectItem.ContainingProject;
+            var currentDocumentPath = Path.GetDirectoryName(createItemInfo.Document.FullName);
+            var currentDocumentExtension = Path.GetExtension(createItemInfo.Document.FullName);
+            var handleExistedClassFile = createItemInfo.HandleExistedClassFile;
+            var handleBeforeCreateNewClassFile = createItemInfo.HandleBeforeCreateNewClassFile;
+            var handleAfterNewClassFile = createItemInfo.HandleAfterNewClassFile;
+            var selectedName = createItemInfo.CodeContext?.Name;
+            if (createItemInfo.CreateItemType == CreateItemType.File)
             {
-                newFilePath = Path.Combine(projectPath, $"{baseFileName}_{counter}.cs");
-                counter++;
-            } while (File.Exists(newFilePath));
-
-            return newFilePath;
+                var classCode = CodeHelper.AddNamespaceToCode(createItemInfo.CodeContext);
+                var filePath = Path.Combine(currentDocumentPath, selectedName + currentDocumentExtension);
+                await CreateNewItemAsync(project,
+                                            currentDocumentPath,
+                                            filePath,
+                                            classCode,
+                                            selectedName,
+                                            handleExistedClassFile,
+                                            handleBeforeCreateNewClassFile,
+                                            handleAfterNewClassFile);
+            }
+            else if (createItemInfo.CreateItemType == CreateItemType.EmptyFile)
+            {
+                var filePath = Path.Combine(currentDocumentPath, selectedName);
+                await CreateNewItemAsync(project,
+                                            currentDocumentPath,
+                                            filePath,
+                                            "",
+                                            selectedName,
+                                            handleExistedClassFile,
+                                            handleBeforeCreateNewClassFile,
+                                            handleAfterNewClassFile);
+            }
+            else if (createItemInfo.CreateItemType == CreateItemType.Folder)
+            {
+                foreach (var folder in createItemInfo.Folder.Folders)
+                {
+                    await CreateNewItemAsyncByFolderAsync(createItemInfo, folder);
+                }
+                if (createItemInfo.Folder.Files.Count > 0)
+                {
+                    await CreateNewItemByFilesAsync(project, currentDocumentPath, createItemInfo.Folder.Files, handleExistedClassFile, handleBeforeCreateNewClassFile, handleAfterNewClassFile);
+                }
+            }
+            handleAfterNewClassFile();
         }
+
+        #region private methods
+        private static async Task CreateNewItemAsyncByFolderAsync(CreateItemInfo createItemInfo, Folder folder)
+        {
+            var project = createItemInfo.Document.ProjectItem.ContainingProject;
+            var currentDocumentPath = Path.GetDirectoryName(createItemInfo.Document.FullName);
+            var currentDocumentExtension = Path.GetExtension(createItemInfo.Document.FullName);
+            var handleExistedClassFile = createItemInfo.HandleExistedClassFile;
+            var handleBeforeCreateNewClassFile = createItemInfo.HandleBeforeCreateNewClassFile;
+            var handleAfterNewClassFile = createItemInfo.HandleAfterNewClassFile;
+            var selectedName = createItemInfo.CodeContext?.Name;
+
+
+            await CreateNewFolderItemAsync(project, currentDocumentPath, folder.FolderPath,
+                                    handleBeforeCreateNewClassFile,
+                                    handleAfterNewClassFile);
+
+            if (folder.Files.Count > 0)
+            {
+                var folderPath = Path.Combine(currentDocumentPath, folder.FolderPath);
+                await CreateNewItemByFilesAsync(project, folderPath, folder.Files, handleExistedClassFile, handleBeforeCreateNewClassFile, handleAfterNewClassFile);
+            }
+
+            foreach (var f in folder.Folders)
+            {
+                await CreateNewItemAsyncByFolderAsync(createItemInfo, f);
+            }
+            handleAfterNewClassFile();
+        }
+
 
         /// <summary>
-        /// 异步创建新项目文件。
+        /// 创建新文件夹
         /// </summary>
-        /// <param name="document">当前文档对象。</param>
-        /// <param name="codeContext">代码上下文，用于生成类代码。</param>
-        /// <param name="selectedName">用户选择的新文件名。</param>
-        /// <param name="handleExistedClassFile">处理已存在类文件的回调函数，返回用户响应。</param>
-        /// <param name="handleBeforeCreateNewClassFile">在创建新类文件之前执行的操作。</param>
-        /// <param name="handleAfterNewClassFile">在新类文件创建后执行的操作。</param>
-        /// <returns>一个表示异步操作的任务。</returns>
-        public static async Task CreateNewItemAsync(
-            Document document,
-            CodeContext codeContext,
-            string selectedName,
-            Func<UserResponse> handleExistedClassFile,
+        /// <param name="project"></param>
+        /// <param name="currentDocumentPath"></param>
+        /// <param name="filePath"></param>
+        /// <param name="content"></param>
+        /// <param name="selectedName"></param>
+        /// <param name="handleExistedClassFile"></param>
+        /// <param name="handleBeforeCreateNewClassFile"></param>
+        /// <param name="handleAfterNewClassFile"></param>
+        /// <returns></returns>
+        private static async Task<string> CreateNewFolderItemAsync(
+            Project project,
+            string currentDocumentPath,
+            string folderName,
             Action handleBeforeCreateNewClassFile,
             Action handleAfterNewClassFile)
         {
-            var classCode = CodeHelper.AddNamespaceToCode(codeContext);
-
-            var project = document.ProjectItem.ContainingProject;
-            var currentDocumentPath = Path.GetDirectoryName(document.FullName);
-            var newFilePath = Path.Combine(currentDocumentPath, selectedName + ".cs");
-
-            bool isCreated = false;
-            if (File.Exists(newFilePath))
+            var folderPath = Path.Combine(currentDocumentPath, folderName);
+            if (!Directory.Exists(folderPath))
             {
-                var userResponse = handleExistedClassFile();
+                await ProjectHelper.CreateAndAddFolderAsync(folderPath, project);
+            }
+            else
+            {
+                await ProjectHelper.CreateAndAddFolderAsync(folderPath, project);
+            }
 
-                switch (userResponse)
+            handleAfterNewClassFile();
+            return folderPath;
+        }
+
+        /// <summary>
+        /// 创建新文件
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="currentDocumentPath"></param>
+        /// <param name="Files"></param>
+        /// <param name="handleExistedClassFile"></param>
+        /// <param name="handleBeforeCreateNewClassFile"></param>
+        /// <param name="handleAfterNewClassFile"></param>
+        /// <returns></returns>
+        private static async Task CreateNewItemByFilesAsync(
+            Project project,
+            string currentDocumentPath,
+            List<string> Files,
+            Func<string, UserResponse> handleExistedClassFile,
+            Action handleBeforeCreateNewClassFile,
+            Action handleAfterNewClassFile)
+        {
+
+            for (int i = 0; i < Files.Count; i++)
+            {
+                var newFilePath = Path.Combine(currentDocumentPath, Files[i]);
+
+                bool isCreated = false;
+                if (File.Exists(newFilePath))
+                {
+                    var userResponse = handleExistedClassFile(newFilePath);
+
+                    switch (userResponse)
+                    {
+                        case UserResponse.Overwrite:
+                            handleBeforeCreateNewClassFile();
+                            await ProjectHelper.CreateAndAddFileAsync(newFilePath, "", project);
+                            isCreated = true;
+                            break;
+                        case UserResponse.AutoRename:
+                            newFilePath = FileHelper.GetUniqueFilePath(currentDocumentPath, Files[i]);
+                            handleBeforeCreateNewClassFile();
+                            await ProjectHelper.CreateAndAddFileAsync(newFilePath, "", project);
+                            isCreated = true;
+                            break;
+                        case UserResponse.Cancel:
+                            continue;
+                    }
+                }
+                else
+                {
+                    handleBeforeCreateNewClassFile();
+                    await ProjectHelper.CreateAndAddFileAsync(newFilePath, "", project);
+                    isCreated = true;
+                }
+
+                if (isCreated)
+                {
+                    handleAfterNewClassFile();
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// 创建新文件
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="currentDocumentPath"></param>
+        /// <param name="filePath"></param>
+        /// <param name="content"></param>
+        /// <param name="selectedName"></param>
+        /// <param name="handleExistedClassFile"></param>
+        /// <param name="handleBeforeCreateNewClassFile"></param>
+        /// <param name="handleAfterNewClassFile"></param>
+        /// <returns></returns>
+        private static async Task CreateNewItemAsync(
+            Project project,
+            string currentDocumentPath,
+            string filePath,
+            string content,
+            string selectedName,
+            Func<string, UserResponse> handleExistedClassFile,
+            Action handleBeforeCreateNewClassFile,
+            Action handleAfterNewClassFile)
+        {
+
+            if (File.Exists(filePath))
+            {
+                switch (handleExistedClassFile(filePath))
                 {
                     case UserResponse.Overwrite:
-                        handleBeforeCreateNewClassFile();
-                        await CreateAndAddFileAsync(newFilePath, classCode, project);
-                        isCreated = true;
+                        await CreateNewItemAsync(project, filePath, content, handleBeforeCreateNewClassFile);
                         break;
                     case UserResponse.AutoRename:
-                        newFilePath = FileHelper.GetUniqueFilePath(currentDocumentPath, selectedName);
-                        handleBeforeCreateNewClassFile();
-                        await CreateAndAddFileAsync(newFilePath, classCode, project);
-                        isCreated = true;
+                        filePath = FileHelper.GetUniqueFilePath(currentDocumentPath, selectedName);
+                        await CreateNewItemAsync(project, filePath, content, handleBeforeCreateNewClassFile);
                         break;
                     case UserResponse.Cancel:
                         return;
@@ -84,15 +221,55 @@ namespace NitasTool.Helper
             }
             else
             {
-                handleBeforeCreateNewClassFile();
-                await CreateAndAddFileAsync(newFilePath, classCode, project);
-                isCreated = true;
+                await CreateNewItemAsync(project, filePath, content, handleBeforeCreateNewClassFile);
             }
 
-            if (isCreated)
-            {
-                handleAfterNewClassFile();
-            }
+            handleAfterNewClassFile();
         }
+
+        /// <summary>
+        /// 创建新文件
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="filePath"></param>
+        /// <param name="content"></param>
+        /// <param name="handleBeforeCreateNewClassFile"></param>
+        /// <returns></returns>
+        private static async Task CreateNewItemAsync(
+            Project project, 
+            string filePath, 
+            string content,
+            Action handleBeforeCreateNewClassFile)
+        {
+            handleBeforeCreateNewClassFile();
+            await ProjectHelper.CreateAndAddFileAsync(filePath, content, project);
+        }
+
+
+        /// <summary>
+        /// 获取一个唯一的文件路径。
+        /// </summary>
+        /// <param name="projectPath"></param>
+        /// <param name="baseFileName"></param>
+        /// <param name="fileExtension"></param>
+        /// <returns></returns>
+        public static string GetUniqueFilePath(string projectPath, string baseFileName, string fileExtension = ".cs")
+        {
+            if (baseFileName.EndsWith(fileExtension))
+            {
+                baseFileName = baseFileName.Remove(baseFileName.Length - fileExtension.Length, fileExtension.Length);
+            }
+
+            int counter = 1;
+            string newFilePath;
+            do
+            {
+                newFilePath = Path.Combine(projectPath, $"{baseFileName}_{counter}{fileExtension}");
+                counter++;
+            } while (File.Exists(newFilePath));
+
+            return newFilePath;
+        }
+        #endregion
     }
 }

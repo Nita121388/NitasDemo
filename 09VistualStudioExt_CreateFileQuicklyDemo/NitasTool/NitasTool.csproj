@@ -46,10 +46,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Command1.cs" />
+    <Compile Include="Entity\CodeContext.cs" />
+    <Compile Include="Entity\CreateItemInfo.cs" />
+    <Compile Include="Entity\CreateItemType.cs" />
+    <Compile Include="Entity\Folder.cs" />
+    <Compile Include="Entity\SelectTextType.cs" />
+    <Compile Include="Entity\UserResponse.cs" />
     <Compile Include="Helper\CodeHelper.cs" />
     <Compile Include="Helper\FileHelper.cs" />
+    <Compile Include="Helper\ProjectHelper.cs" />
     <Compile Include="Helper\StatusBarHelper.cs" />
-    <Compile Include="NamespaceAnalyzer.cs" />
+    <Compile Include="Helper\Verifier.cs" />
     <Compile Include="NitasToolPackage1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -118,6 +125,7 @@
       <DependentUpon>NitasMessageBox.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

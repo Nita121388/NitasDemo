@@ -3,13 +3,9 @@
     <Metadata>
         <Identity Id="NitasTool.9a3795db-88c8-48c8-a58c-dcc2e6832898" Version="1.0" Language="zh-CN" Publisher="Nita" />
         <DisplayName>CreateFileQuickly</DisplayName>
-        <Description xml:space="preserve">This is a simple and compact Visual Studio plugin demo &amp;#128296; designed to reduce daily development hassles. It includes features for:
-
-1. **Create New File**: Double-click or select a word in your project code, right-click, and choose “&amp;#127381; Create To New File” from the context menu. The plugin creates a new file named after the selected word in the same folder and adds it to your project.
-2. **Extract Complete Content**: Select an interface, class, enumeration, or structure name, and the plugin extracts its entire content (including comments) into a new file without deleting the source code.
-3. **File Conflict Handling**: If a file with the same name exists, the plugin prompts you to choose between overwriting or automatically renaming it.
-
-**Source code**: [GitHub](https://github.com/your-repo-link)</Description>
+        <Description xml:space="preserve">这是一个简洁小巧的插件，用于快速将文件和者文件夹，或者从已有代码中拆分出内容到新的文件中并添加到项目中。主要功能包括：
+1. 从代码创建新文件：双击或选择接口名、类名等，右键选择“Create To New File”即可创建并添加到项目中。
+2. 从文本快速批量创建文件夹和文件：选择以Tab区分出层级关系的文本，插件会自动解析并创建相应的文件夹和文件。当然也支持创建单个文件或文件夹</Description>
         <Icon>Resources\1f469-1f3fb-200d-1f4bb.png</Icon>
         <Tags>Productivity Tool,Create Class File Quickly,Developer Tool,Open Source,</Tags>
     </Metadata>

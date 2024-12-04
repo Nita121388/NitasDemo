@@ -1,6 +1,8 @@
 ﻿using EnvDTE;
+using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using NitasTool.Entity;
 using NitasTool.Helper;
 using NitasTool.Validator;
 using NitasTool.Views;
@@ -91,66 +93,44 @@ namespace NitasTool
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            SelectClassNameToNewFile();
+            _ = SelectClassNameToNewFileAsync();
         }
 
-        private async void SelectClassNameToNewFile()
+        private async Task SelectClassNameToNewFileAsync()
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             try
             {
-                string title = "Selelect  To Create New File";
+                string title = "Selelect To Create New File";
 
                 var result = await ServiceProvider.GetServiceAsync(typeof(DTE));
                 var dte = (DTE)result;
                 if (result == null || dte == null)
                 {
-                    VsShellUtilities.ShowMessageBox(
-                        this.package,
-                        "DTE object is null",
-                        title,
-                        OLEMSGICON.OLEMSGICON_INFO,
-                        OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                        OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-
+                    ShowMessageBox("Error", "DTE object is null");
                     return;
                 }
 
                 var selectedText = CodeHelper.GetSelectedText(dte.ActiveDocument);
+                var selectedContentType = CodeHelper.ContentType(selectedText);
 
-                var validationResult = FileNameValidator.IsValidFileName(selectedText);
-
-                if (!validationResult.IsValid)
+                if(Validate(selectedContentType, selectedText, this.package, title))
                 {
-                    string errorMessage = validationResult.ErrorMessage;
-                    VsShellUtilities.ShowMessageBox(
-                        this.package,
-                        "No class name selected",
-                        title,
-                        OLEMSGICON.OLEMSGICON_INFO,
-                        OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                        OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-                    return;
+                    var createItemInfo = new CreateItemInfo(selectedText, dte.ActiveDocument,      HandleExistedClassFile,
+                      HandleBerforeCrrateNewClassFile,
+                      HandleAfterNewClassFile);
+
+                    await FileHelper.CreateNewItemAsyncByCreateItemInfoAsync(createItemInfo);
                 }
 
-                var SelectionAnalyzer = new CodeAnalyzer(dte);
-                SelectionAnalyzer.CreateToNewClassFile(selectedText, 
-                    HandleExistedClassFile, 
-                    HandleBerforeCrrateNewClassFile,
-                    HandleAfterNewClassFile);
             }
             catch (Exception ex)
             {
-                VsShellUtilities.ShowMessageBox(
-                    this.package,
-                    ex.Message,
-                    "Error",
-                    OLEMSGICON.OLEMSGICON_CRITICAL,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                ShowMessageBox("Error", ex.Message);
             }
         }
 
-        public UserResponse HandleExistedClassFile()
+        public UserResponse HandleExistedClassFile(string path)
         {
             string message = "File already exists! \r\n " +
                 "Do you want to overwrite it ? \r\n " +
@@ -158,7 +138,7 @@ namespace NitasTool
                 " or cancel?";
             string title = "File Already Exists";
 
-            var result = new NitasMessageBox(title, message).ShowDialog();
+            var result = new NitasMessageBox(title, message, path).ShowDialog();
             switch (result) 
             { 
                 case DialogResult.Yes: 
@@ -179,11 +159,36 @@ namespace NitasTool
         {
             StatusBarHelper.ShowStatusBarText(ServiceProvider, $"⏳New  File creating...");
         }
-        public enum UserResponse
+        public bool Validate(SelectTextType selectedContentType, string selectedText, AsyncPackage package, string title)
         {
-            Overwrite,
-            AutoRename,
-            Cancel
+            if (selectedContentType == SelectTextType.Word)
+            {
+                var validationResult = FileNameValidator.IsValidFileName(selectedText);
+
+                if (!validationResult.IsValid)
+                {
+                    string errorMessage = validationResult.ErrorMessage;
+                    VsShellUtilities.ShowMessageBox(
+                        package,
+                        "No class name selected",
+                        title,
+                        OLEMSGICON.OLEMSGICON_INFO,
+                        OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                        OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                    return false;
+                }
+            }
+            return true;
+        }
+        private void ShowMessageBox(string title,string message )
+        {
+            VsShellUtilities.ShowMessageBox(
+                this.package,
+                message,
+                title,
+                OLEMSGICON.OLEMSGICON_INFO,
+                OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Shell;
+using NitasTool.Entity;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,6 +21,7 @@ namespace NitasTool.Validator
     {
         // 定义不允许的字符
         private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
+
 
         public static FileNameValidationResult IsValidFileName(string fileName)
         {

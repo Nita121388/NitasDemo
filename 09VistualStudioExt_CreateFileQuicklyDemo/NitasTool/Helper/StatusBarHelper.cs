@@ -8,6 +8,7 @@ namespace NitasTool.Helper
     {
         public static async void ShowStatusBarText(IAsyncServiceProvider serviceProvider, string text)
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             IVsStatusbar statusBar = (IVsStatusbar)await serviceProvider.GetServiceAsync(typeof(SVsStatusbar));
 
             // Make sure the status bar is not frozen
