@@ -51,6 +51,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "F.StrategyPattern.ParamAdap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "G.StrategyPattern.Configurator", "StrategyPattern\G.StrategyPattern.Configurator\G.StrategyPattern.Configurator.csproj", "{2EBB62FD-9B41-4089-9ED7-7BA84BBA7929}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommandPattern", "CommandPattern", "{F5387E9D-CE13-4460-BC4F-DAA70F3C6532}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandPattern", "CommandPattern\CommandPattern\CommandPattern.csproj", "{5B6D841C-C233-4A4C-846E-09B9D5194B2F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +149,10 @@ Global
 		{2EBB62FD-9B41-4089-9ED7-7BA84BBA7929}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EBB62FD-9B41-4089-9ED7-7BA84BBA7929}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EBB62FD-9B41-4089-9ED7-7BA84BBA7929}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B6D841C-C233-4A4C-846E-09B9D5194B2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B6D841C-C233-4A4C-846E-09B9D5194B2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B6D841C-C233-4A4C-846E-09B9D5194B2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B6D841C-C233-4A4C-846E-09B9D5194B2F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -172,5 +180,6 @@ Global
 		{FDEE1358-B67F-4BF9-A14F-1F2F988CB6A6} = {56704615-42E4-4028-A913-0C559936E944}
 		{18833344-F069-4B69-9DC1-16DA2DD9551C} = {56704615-42E4-4028-A913-0C559936E944}
 		{2EBB62FD-9B41-4089-9ED7-7BA84BBA7929} = {56704615-42E4-4028-A913-0C559936E944}
+		{5B6D841C-C233-4A4C-846E-09B9D5194B2F} = {F5387E9D-CE13-4460-BC4F-DAA70F3C6532}
 	EndGlobalSection
 EndGlobal
