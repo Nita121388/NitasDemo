@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lazy_ExecutionAndPublication", "Lazy_ExecutionAndPublication\Lazy_ExecutionAndPublication.csproj", "{95E26D84-FB45-41AF-B80E-5BECCC125292}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lazy_PublicationOnlyLoggerDemo", "Lazy_PublicationOnlyLoggerDemo\Lazy_PublicationOnlyLoggerDemo.csproj", "{F2E55685-4D2F-4C49-BA54-BB2F7FF0F6F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lazy_DI", "Lazy_DI\Lazy_DI.csproj", "{151D2128-94C5-4ADF-9F80-D3ED02C551D5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{95E26D84-FB45-41AF-B80E-5BECCC125292}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95E26D84-FB45-41AF-B80E-5BECCC125292}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95E26D84-FB45-41AF-B80E-5BECCC125292}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95E26D84-FB45-41AF-B80E-5BECCC125292}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2E55685-4D2F-4C49-BA54-BB2F7FF0F6F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2E55685-4D2F-4C49-BA54-BB2F7FF0F6F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2E55685-4D2F-4C49-BA54-BB2F7FF0F6F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2E55685-4D2F-4C49-BA54-BB2F7FF0F6F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{151D2128-94C5-4ADF-9F80-D3ED02C551D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{151D2128-94C5-4ADF-9F80-D3ED02C551D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{151D2128-94C5-4ADF-9F80-D3ED02C551D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{151D2128-94C5-4ADF-9F80-D3ED02C551D5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
